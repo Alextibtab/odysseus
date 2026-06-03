@@ -80,7 +80,7 @@ python setup.py
 uvicorn app:app --host 127.0.0.1 --port 7000
 ```
 
-For optional deps, install only what you need: `uv sync --extra stt` (local voice), `--extra search` (DuckDuckGo), `--extra pdf` (form-filling, AGPL-3.0), or `--extra markitdown` (Office/EPUB text). Or install all: `pip install ".[stt,search,pdf,markitdown]"`.
+For optional deps, install only what you need: `uv pip install ".[stt]"` (local voice), `".[search]"` (DuckDuckGo), `".[pdf]"` (form-filling, AGPL-3.0), or `".[markitdown]"` (Office/EPUB text). Or install all: `uv pip install ".[stt,search,pdf,markitdown]"`.
 
 If you don't have [uv](https://docs.astral.sh/uv/) installed, use `python3 -m venv venv` and `pip install .` instead.
 

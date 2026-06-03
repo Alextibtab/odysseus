@@ -2,7 +2,7 @@
 
 markitdown (MIT, Microsoft) converts Office/EPUB documents to Markdown, which is
 more token-efficient and model-legible than a raw text dump. It is **optional**:
-install with `uv sync --extra markitdown` (or `pip install ".[markitdown]"`).
+install with `uv pip install ".[markitdown]"` (or `pip install ".[markitdown]"`).
 When absent, callers degrade gracefully (chat shows a hint; the RAG indexer skips
 the file) — the MIT core never hard-depends on it. Mirrors the optional-dependency
 pattern in `src/pdf_runtime.py`.
