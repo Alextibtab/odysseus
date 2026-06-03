@@ -73,12 +73,17 @@ only when you intentionally want LAN/reverse-proxy access.
 ```bash
 git clone https://github.com/pewdiepie-archdaemon/odysseus.git
 cd odysseus
-python3 -m venv venv
+uv venv
 source venv/bin/activate
-pip install -r requirements.txt
+uv pip install .
 python setup.py
-python -m uvicorn app:app --host 127.0.0.1 --port 7000
+uvicorn app:app --host 127.0.0.1 --port 7000
 ```
+
+For optional deps (DuckDuckGo search, PDF form-filling): `uv pip install ".[optional]"`
+
+If you don't have [uv](https://docs.astral.sh/uv/) installed, use `python3 -m venv venv` and `pip install .` instead.
+
 Requirements: Python 3.11+. Cookbook also needs `tmux` for background model
 downloads and serves. The app itself is lightweight; local model serving is the
 heavy part and depends on the model, runtime, GPU, and VRAM, so small hosts can
@@ -260,15 +265,14 @@ Or do it by hand:
 ```powershell
 git clone https://github.com/pewdiepie-archdaemon/odysseus.git
 cd odysseus
-py -3.11 -m venv venv
+uv venv
 venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+uv pip install .
 python setup.py
 python -m uvicorn app:app --host 127.0.0.1 --port 7000
 ```
 
-If `python` points at an older interpreter, use `py -3.12` (or another installed
-3.11+ version) for the venv step.
+If you don't have [uv](https://docs.astral.sh/uv/) installed, use `py -3.12 -m venv venv` and `pip install .` instead.
 
 **Requirements:** Python 3.11+. The core app (chat, agent, memory, documents,
 email, calendar, deep research) runs fully native. For full **Cookbook** background
