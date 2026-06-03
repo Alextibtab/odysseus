@@ -60,7 +60,7 @@ class STTService:
             try:
                 from faster_whisper import WhisperModel
             except ImportError:
-                logger.warning("faster-whisper not installed. Install with: pip install faster-whisper")
+                logger.warning("faster-whisper not installed. Install with: uv pip install \".[stt]\" (or pip install \".[stt]\")")
                 return None
             try:
                 settings = self._load_settings()

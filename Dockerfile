@@ -29,7 +29,7 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 ARG INSTALL_OPTIONAL=false
 COPY pyproject.toml .
 RUN if [ "$INSTALL_OPTIONAL" = "true" ]; then \
-      uv pip install --system --no-cache ".[optional]"; \
+      uv pip install --system --no-cache ".[stt,search,pdf,markitdown]"; \
     else \
       uv pip install --system --no-cache "."; \
     fi
