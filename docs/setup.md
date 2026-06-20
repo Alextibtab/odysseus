@@ -42,7 +42,7 @@ git clone https://github.com/pewdiepie-archdaemon/odysseus.git
 cd odysseus
 python3 -m venv venv
 source venv/bin/activate
-pip install -r requirements.txt
+pip install .
 python setup.py
 python -m uvicorn app:app --host 127.0.0.1 --port 7000
 ```
@@ -242,7 +242,7 @@ git clone https://github.com/pewdiepie-archdaemon/odysseus.git
 cd odysseus
 py -3.11 -m venv venv
 venv\Scripts\Activate.ps1
-pip install -r requirements.txt
+pip install .
 python setup.py
 python -m uvicorn app:app --host 127.0.0.1 --port 7000
 ```
@@ -287,14 +287,23 @@ To expose Odysseus on a local network or Tailscale with HTTPS:
 4. Install the `mkcert` CA on any other device you want to access Odysseus from (e.g., for iOS, email the `rootCA.pem` to yourself, install the profile, and trust it in Certificate Trust Settings).
 
 ### Optional Dependencies
-`requirements-optional.txt` contains packages that unlock extra features. It is not installed by default.
 
-| Package | Feature unlocked |
-|---------|-----------------|
-| `faster-whisper` | Local speech-to-text (microphone -> text) via the "local" STT provider. |
-| `ddgs` | DuckDuckGo as a search provider option. |
-| `PyMuPDF` | PDF page rendering in the side viewer panel and form-filling. (Note: AGPL-3.0) |
-| `markitdown` | Office/EPUB document text extraction (converts .docx/.xlsx/.pptx/.xls/.epub to Markdown). |
+Optional dependency groups are defined in `pyproject.toml` under `[project.optional-dependencies]`. Install only what you need:
+
+| Extra | Package | Feature unlocked |
+|-------|---------|-----------------|
+| `stt` | `faster-whisper` | Local speech-to-text (microphone -> text) via the "local" STT provider. |
+| `search` | `ddgs` | DuckDuckGo as a search provider option. |
+| `pdf` | `PyMuPDF` | PDF page rendering in the side viewer panel and form-filling. (Note: AGPL-3.0) |
+| `markitdown` | `markitdown` | Office/EPUB document text extraction (converts .docx/.xlsx/.pptx/.xls/.epub to Markdown). |
+
+```bash
+pip install ".[stt]"       # local STT
+pip install ".[search]"    # DuckDuckGo search
+pip install ".[pdf]"      # PDF form-filling (AGPL-3.0)
+pip install ".[markitdown]"  # Office/EPUB text extraction
+pip install ".[stt,search,pdf,markitdown]"  # all optional extras
+```
 
 ### Faster, reproducible installs with uv (optional)
 [uv](https://docs.astral.sh/uv/) works as a drop-in replacement for the
@@ -302,18 +311,18 @@ venv + pip steps in the native install guides, no project changes are needed but
 
 ```bash
 uv venv venv --python 3.13
-uv pip install -r requirements.txt
+uv pip install .
 # then continue as usual: python setup.py, uvicorn, ...
 ```
 
-`requirements.txt` is intentionally unpinned, so two installs at different times can produce different package versions. If you want a reproducible environment (e.g. across your own machines, or to roll back after a bad upgrade), snapshot and restore exact versions with:
+`pyproject.toml` dependencies are intentionally unpinned, so two installs at different times can produce different package versions. If you want a reproducible environment (e.g. across your own machines, or to roll back after a bad upgrade), snapshot and restore exact versions with:
 
 ```bash
-uv pip compile requirements.txt -o requirements.lock   # snapshot current resolution
+uv pip compile pyproject.toml -o requirements.lock   # snapshot current resolution
 uv pip sync requirements.lock                          # reproduce it exactly later
 ```
 
-`requirements.lock` is gitignored and platform-specific (compile it on the OS you deploy to). Regenerate it deliberately when you want to take upgrades. The plain `uv pip install -r requirements.txt` keeps following the unpinned requirements like pip does.
+`requirements.lock` is gitignored and platform-specific (compile it on the OS you deploy to). Regenerate it deliberately when you want to take upgrades.
 
 ### Outlook / Office 365 email
 Odysseus email accounts currently use IMAP/SMTP username-password auth. Outlook

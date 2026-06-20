@@ -146,7 +146,7 @@ def create_default_admin():
             print("  [error] bcrypt loaded with the wrong CPU architecture.")
             print("          Rebuild the venv with an arm64 Python:")
             print("            rm -rf venv && /opt/homebrew/bin/python3.11 -m venv venv")
-            print("            ./venv/bin/pip install -r requirements.txt")
+print("            ./venv/bin/pip install .")
             return "skipped"
         print("  [warn] bcrypt not installed — skipping admin user creation")
         print("         Run: pip install bcrypt")
@@ -179,7 +179,7 @@ def check_deps():
             missing.append(mod)
     if missing:
         print(f"\n  [warn] Missing packages: {', '.join(missing)}")
-        print(f"         Run: pip install -r requirements.txt")
+        print(f"         Run: uv pip install . (or pip install .)")
     else:
         print("  [ok] All core dependencies installed")
 
@@ -229,8 +229,8 @@ def check_arch():
     print("\n          Rebuild the environment with Homebrew's arm64 Python:")
     print("            brew install python@3.11          # if you don't have it yet")
     print("            rm -rf venv")
-    print("            /opt/homebrew/bin/python3.11 -m venv venv")
-    print("            ./venv/bin/pip install -r requirements.txt")
+print("            /opt/homebrew/bin/python3.11 -m venv venv")
+            print("            ./venv/bin/pip install .")
     print("            ./venv/bin/python setup.py")
     print("\n          Tip: ./start-macos.sh does all of this with the right Python.\n")
     sys.exit(1)
