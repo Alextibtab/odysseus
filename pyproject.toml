@@ -1,3 +1,104 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["core", "routes", "services", "src"]
+
+[project]
+name = "odysseus"
+version = "0.9.1"
+requires-python = ">=3.12"
+
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "python-multipart",
+    "python-dotenv",
+    "httpx",
+    "pydantic>=2.13.4",
+    "pydantic-settings>=2.14.1",
+    "SQLAlchemy",
+    "pypdf",
+    "beautifulsoup4",
+    "charset-normalizer",
+    "numpy",
+    # Vector store + local embeddings for RAG, semantic memory, and tool
+    # selection. Used on core agent paths, so installed by default — the app
+    # still degrades to keyword fallback if they're ever missing.
+    # chromadb-client is the lightweight HTTP client (talks to a standalone
+    # ChromaDB service); fastembed runs local ONNX embeddings.
+    "chromadb-client",
+    "fastembed",
+    "youtube-transcript-api",
+    # Markdown rendering for research reports (src/visual_report.py).
+    # Imported at module-top so it's a hard core dep, not optional.
+    "markdown",
+    # HTML sanitizer for rendered research reports (src/visual_report.py). Report
+    # content is untrusted (LLM output over crawled pages) and report pages run
+    # under a relaxed CSP, so the rendered HTML is allowlist-sanitized.
+    "nh3",
+    # Calendar .ics import/export (routes/calendar_routes.py).
+    "icalendar",
+    # Recurrence rule expansion for calendar events (routes/calendar_routes.py).
+    # Imported directly as dateutil.rrule — make it explicit even though caldav
+    # pulls it in transitively.
+    "python-dateutil",
+    # CalDAV sync (src/caldav_sync.py). Handles PROPFIND discovery + REPORT
+    # fetch across Radicale, Nextcloud, Apple, Fastmail; we'd be reinventing
+    # the protocol without it.
+    "caldav",
+    "cryptography",
+    "bcrypt",
+    "mcp",
+    "pyotp",
+    "qrcode[pil]",
+    "croniter",
+    "pytest",
+    "pytest-asyncio",
+    # starlette.testclient prefers httpx2 since Starlette 1.2.0 and warns on every
+    # TestClient import when only classic httpx is present. Runtime code keeps
+    # using `httpx` above; this is test-client only.
+    "httpx2",
+]
+
+[project.optional-dependencies]
+stt = [
+    # Local speech-to-text (microphone -> text) via faster-whisper, for the
+    # "local" STT provider. Runs on CPU out of the box (CTranslate2 backend, no
+    # torch needed). Install if you want to dictate/transcribe with the mic
+    # without sending audio to an external endpoint.
+    # Optional extra: install `torch` too if you have a CUDA GPU and want
+    # GPU-accelerated transcription — it's auto-detected, CPU is used otherwise.
+    "faster-whisper",
+]
+search = [
+    # DuckDuckGo as a search provider option.
+    # Install if you want DDG in the search-provider dropdown.
+    # Alternatives: SearXNG, Brave, Tavily, Serper, Google PSE.
+    "duckduckgo-search",
+]
+pdf = [
+    # PDF form-filling feature (fillable AcroForm detection, field extraction,
+    # value/annotation/signature stamping, page rendering for the form overlay).
+    # NOTE: PyMuPDF is AGPL-3.0. Installing it brings AGPL obligations for a
+    # network-served app — see ACKNOWLEDGMENTS.md. The MIT core (PDF *text*
+    # extraction via pypdf) works without it; this only unlocks form-filling.
+    "PyMuPDF",
+]
+markitdown = [
+    # Office / EPUB document text extraction (chat attachments + the personal-docs
+    # RAG index). markitdown (MIT, Microsoft) converts .docx/.xlsx/.pptx/.xls/.epub
+    # to Markdown — more token-efficient and model-legible than a raw dump. Optional
+    # and lazy-imported via src/markitdown_runtime.py; without it those formats fall
+    # back to a friendly "install to extract" banner and the core stays pure-MIT.
+    # Extras pull mammoth/lxml/python-pptx/pandas/openpyxl/xlrd; the base also pulls
+    # magika (onnxruntime), already a core dep via fastembed. We avoid the
+    # [all]/Azure/audio extras (cloud + heavy). Pinned to a release >30 days old per
+    # the dependency-age discussion in issue #485.
+    "markitdown[docx,pptx,xlsx,xls]==0.1.6",
+]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"

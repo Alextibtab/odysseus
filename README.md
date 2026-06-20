@@ -36,6 +36,27 @@ docker compose up -d --build
 
 Open `http://localhost:7000` when the containers are healthy. The first admin password is printed in `docker compose logs odysseus`.
 
+### Native Linux / macOS
+```bash
+git clone https://github.com/pewdiepie-archdaemon/odysseus.git
+cd odysseus
+uv venv
+source venv/bin/activate
+uv pip install .
+python setup.py
+uvicorn app:app --host 127.0.0.1 --port 7000
+```
+
+For optional deps, install only what you need: `uv pip install ".[stt]"` (local voice), `".[search]"` (DuckDuckGo), `".[pdf]"` (form-filling, AGPL-3.0), or `".[markitdown]"` (Office/EPUB text). Or install all: `uv pip install ".[stt,search,pdf,markitdown]"`.
+
+If you don't have [uv](https://docs.astral.sh/uv/) installed, use `python3 -m venv venv` and `pip install .` instead.
+
+Requirements: Python 3.11+. Cookbook also needs `tmux` for background model
+downloads and serves. The app itself is lightweight; local model serving is the
+heavy part and depends on the model, runtime, GPU, and VRAM, so small hosts can
+connect to API or remote model servers instead. Use `--host 0.0.0.0` only when
+you intentionally want LAN/reverse-proxy access.
+
 Native installs, GPU notes, Windows/macOS instructions, HTTPS, and configuration live in the [setup guide](docs/setup.md).
 
 ## Features
